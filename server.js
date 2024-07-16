@@ -7,7 +7,7 @@ const path = require('path');
 
 app.use(express.json());
 
-app.listen(3000)
+app.listen(8080)
 
 app.get('/', (req, res) => {
     res.send("test")
