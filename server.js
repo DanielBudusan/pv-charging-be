@@ -36,7 +36,7 @@ app.post('/set_charging_amps/:vehicleTag', async (req, res) => {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await axios.post(`https://vehicle-command-vcq3v7ksva-uc.a.run.app/api/1/vehicles/${vehicleTag}/command/set_charging_amps`, proxyRequestBody, {
+        const response = await axios.post(`https://vehicle-command.railway.internal/api/1/vehicles/${vehicleTag}/command/set_charging_amps`, proxyRequestBody, {
             httpsAgent: httpsAgent,
             headers: headers
         });
