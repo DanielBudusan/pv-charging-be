@@ -13,10 +13,6 @@ app.get('/', (req, res) => {
     res.send("test")
 })
 
-//url
-//test1
-//test2
-//final2
 app.post('/set_charging_amps/:vehicleTag', async (req, res) => {
     try {
         const authHeader = req.headers['authorization'];
@@ -40,14 +36,18 @@ app.post('/set_charging_amps/:vehicleTag', async (req, res) => {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const response = await axios.post(`https://127.0.0.1:4443/api/1/vehicles/${vehicleTag}/command/set_charging_amps`, proxyRequestBody, {
+        const response = await axios.post(`https://vehicle-command-vcq3v7ksva-uc.a.run.app/api/1/vehicles/${vehicleTag}/command/set_charging_amps`, proxyRequestBody, {
             httpsAgent: httpsAgent,
             headers: headers
         });
 
         res.send(response.data);
     } catch (error) {
-        res.status(500).json({ message: error.response.data })
+        if (error.response && error.response.data !== undefined) {
+            res.status(500).json({ message: error.response.data })
+        } else {
+            res.status(500).json({ message: error.message })
+        }
     }
 })
 
