@@ -126,9 +126,9 @@ async function fetchData(plantNumber, accessToken) {
 
 
 // Trigger fetch every 5 minutes (300,000 ms)
-setInterval(() => {
-    fetchData(accessData.plantNumber, accessData.accessToken);
-}, 2000);
+// setInterval(() => {
+//     fetchData(accessData.plantNumber, accessData.accessToken);
+// }, 2000);
 
 app.get('/get_power', (req, res) => {
     if (fetchedData) {
