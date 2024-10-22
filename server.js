@@ -5,6 +5,13 @@ const fs = require('fs');
 const https = require('https');
 const path = require('path');
 
+let accessData = {
+    accessToken: "x-pe3ujvrs8bo5ilo7mk3yrwlcuobydd04ak89tes7fwc83vc9g5855cim1gtdnt3t5h1f2m886lpdntbwbzvyc47zrvbsrtnsil47tirupd2knv6qsbapenrzsbryul3v",
+    plantNumber: "NE=152408210"
+};
+
+let fetchedData = {}
+
 app.use(express.json());
 
 app.listen(8080)
@@ -79,3 +86,54 @@ app.get('/vehicle_data/:vehicleTag', async (req, res) => {
         res.status(500).json({ message: error.response.data })
     }
 })
+
+app.post('/set_access', (req, res) => {
+    const { accessToken, plantNumber } = req.body;
+    if (!accessToken || !plantNumber) {
+        return res.status(400).send({ message: 'Both accessToken and plantNumber are required' });
+    }
+    accessData = { accessToken, plantNumber };  // Update the stored data
+    res.send({ message: 'Data received successfully' });
+
+});
+
+async function fetchData(plantNumber, accessToken) {
+    const url = `https://uni002eu5.fusionsolar.huawei.com:32800/rest/pvms/web/station/v1/overview/energy-flow?stationDn=${plantNumber}`;
+  
+    const httpsAgent = new https.Agent({
+        rejectUnauthorized: false
+    });
+
+    try {
+      const response = await axios.get(url, {
+        httpsAgent: httpsAgent,
+        headers: {
+          'Cookie': `locale=en-us; dp-session=${accessToken}; bspsession=${accessToken}; HWWAFSESID=2184119cc8548e5b51c0; path=/`,
+          'Content-Type': 'application/json'
+        }  
+      });
+  
+      if (response.status === 200) {
+        fetchedData = response.data.data.flow.nodes[0].description.value
+        console.log(fetchedData, new Date().toLocaleString()); 
+      } else {
+        console.log(`HTTP request failed with status code: ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`Request failed with error: ${error.message}`);
+    }
+  }
+
+
+// Trigger fetch every 5 minutes (300,000 ms)
+setInterval(() => {
+    fetchData(accessData.plantNumber, accessData.accessToken);
+}, 180000);
+
+app.get('/get_power', (req, res) => {
+    if (fetchedData) {
+        res.json(fetchedData);
+    } else {
+        res.status(404).send({ message: 'No data found' });
+    }
+});
