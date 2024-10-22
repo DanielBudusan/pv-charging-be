@@ -6,7 +6,7 @@ const https = require('https');
 const path = require('path');
 
 let accessData = {
-    accessToken: "x-pe3ujvrs8bo5ilo7mk3yrwlcuobydd04ak89tes7fwc83vc9g5855cim1gtdnt3t5h1f2m886lpdntbwbzvyc47zrvbsrtnsil47tirupd2knv6qsbapenrzsbryul3v",
+    accessToken: "x-nseolf5htf448bmlpd3x6qmq9j3u9d493uldhj2p88mrnxqogakb6lqqiohf2r2m1hc4c5fxirtglhrzqnc44504vz0aryaq1ins8ao4862miqo83zs4pciqnt9g467t",
     plantNumber: "NE=152408210"
 };
 
@@ -128,7 +128,7 @@ async function fetchData(plantNumber, accessToken) {
 // Trigger fetch every 5 minutes (300,000 ms)
 setInterval(() => {
     fetchData(accessData.plantNumber, accessData.accessToken);
-}, 180000);
+}, 2000);
 
 app.get('/get_power', (req, res) => {
     if (fetchedData) {
